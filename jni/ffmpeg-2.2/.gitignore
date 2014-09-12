@@ -54,7 +54,6 @@
 /libavcodec/*_tablegen
 /libavcodec/*_tables.c
 /libavcodec/*_tables.h
-/libavutil/avconfig.h
 /libavutil/ffversion.h
 /tests/audiogen
 /tests/base64
