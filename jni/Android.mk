@@ -29,4 +29,6 @@ LOCAL_LDLIBS := -llog -lz -ljnigraphics -lm
 LOCAL_SHARED_LIBRARIES := libavcodec libavutil libavformat libswscale
 
 include $(BUILD_SHARED_LIBRARY)
-$(call import-module,ffmpeg-2.2/android/armv7-neon)
+# Due to GNU Make limitations, NDK_MODULE_PATH must not contain any space.
+$(call import-add-path,$(LOCAL_PATH)/ffmpeg-2.2/android)
+$(call import-module,arm)

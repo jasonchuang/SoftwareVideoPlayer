@@ -240,6 +240,8 @@ public class VideoSurfaceView extends SurfaceView implements MediaPlayerControl 
 
     public void setVideoPath(String path) {
         mPath = path;
+//        mPath = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
+//        mPath = "/sdcard/SamplePartList.m3u8";
     }
 
     public void stopPlayback() {
@@ -729,6 +731,7 @@ public class VideoSurfaceView extends SurfaceView implements MediaPlayerControl 
             nativeMediaInit(data);
 
             int[] resolution = nativeGetMediaResolution();
+            // Need to check resolution equlas to zero here
             int frameTick = 1000 / nativeGetMediaFps();
             mBitmap = Bitmap.createBitmap(resolution[0], resolution[1], Bitmap.Config.ARGB_8888);
             nativePrepareBitmap(mBitmap, resolution[0], resolution[1]);
