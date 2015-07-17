@@ -125,6 +125,7 @@ public class VideoSurfaceView extends SurfaceView implements MediaPlayerControl 
     public native int nativePrepareBitmap(Bitmap bitmap, int width, int height);
     public native int nativeGetFrame();
     public native int nativeMediaFinish(Bitmap bitmap);
+    public native void nativeSleep(int ms);
 
     public VideoSurfaceView(Context context) {
         super(context);
@@ -743,8 +744,7 @@ public class VideoSurfaceView extends SurfaceView implements MediaPlayerControl 
 
                 if (currentFrame > 0) {
                     setVideoSurfaceBitmap();
-                    long endMs = System.currentTimeMillis();
-                    SystemClock.sleep(Math.max(0, frameTick - (int)(endMs - startMs)));
+                    busyPollingSleep(frameTick, startMs);
                     if (isCancelled()) {
                         nativeMediaFinish(mBitmap);
                         break;
@@ -756,6 +756,19 @@ public class VideoSurfaceView extends SurfaceView implements MediaPlayerControl 
             }
 
             return null;
+        }
+
+        /*
+         * Java thread sleep or linux usleep/select API all will wait more time than expeceted due to
+         * CPU context switching overhead, about 10 ~ 30 ms, ref the following doc
+         * http://www.linux.org.tw/CLDP/MiniHOWTO/prog/IO-Port-Programming/IO-Port-Programming-4.html
+         */
+        void busyPollingSleep(int frameTick, long startMs) {
+            long delta = System.currentTimeMillis() - startMs;
+            do {
+                // Log.i("jason", "busyPollingSleep:");
+                delta = System.currentTimeMillis() - startMs;
+            } while (frameTick > delta);
         }
 
         @Override

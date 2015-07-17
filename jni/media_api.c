@@ -15,6 +15,7 @@
  *
  */
 #include <string.h>
+#include <time.h>
 #include <jni.h>
 #include <android/bitmap.h>
 #include "libavutil/pixfmt.h"
@@ -35,6 +36,8 @@ struct SwsContext *gSwsContext;
 void* buffer;
 AVFrame *gRGBAFrame = NULL;
 AVFrame *gYUVFrame = NULL;
+
+#define ONE_MILLI_IN_MICROS 1000
 
 jint
 Java_com_jasonsoft_softwarevideoplayer_VideoSurfaceView_nativeMediaInit(JNIEnv* env, jobject thiz, jstring pFilename)
@@ -237,3 +240,16 @@ Java_com_jasonsoft_softwarevideoplayer_VideoSurfaceView_nativeMediaFinish(JNIEnv
     return 0;
 }
 
+void
+Java_com_jasonsoft_softwarevideoplayer_VideoSurfaceView_nativeSleep(JNIEnv* env, jobject thiz, jint ms) {
+    LOGE("nativeSleep %d", ms);
+    usleep(ms);
+//    sleep_in_millis(ms);
+    return 0;
+}
+
+void sleep_in_millis(int ms) {
+    LOGE("sleep_in_millis");
+   struct timeval tv = {.tv_sec = 0, .tv_usec = ms * ONE_MILLI_IN_MICROS};
+   select(0, NULL, NULL, NULL, &tv);
+}
